@@ -101,7 +101,7 @@ public class VirtualUI {
       // [23:32:19 WARN]:        at java.base/java.util.Objects.requireNonNull(Objects.java:246)
       // [23:32:19 WARN]:        at com.mojang.authlib.GameProfile.<init>(GameProfile.java:31)
       // [23:32:19 WARN]:        at org.bukkit.craftbukkit.inventory.CraftMetaSkull.setOwningPlayer(CraftMetaSkull.java:212)
-      e.printStackTrace();
+      Main.logger.warning("Player UUID not found: " + playerUUID.toString() + "; User name: " + Bukkit.getOfflinePlayer(playerUUID).getName() + "; " + e.getMessage());
     }
 
     item.setItemMeta(meta);

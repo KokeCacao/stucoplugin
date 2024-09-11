@@ -3,6 +3,7 @@ package stucoplugin;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,6 +28,7 @@ public class Main extends JavaPlugin {
   StucoTabCompleter tabCompleter;
   int numfails = 3;
   public static String term;
+  public static Logger logger;
 
   @Override
   public void onEnable() {
@@ -35,12 +37,13 @@ public class Main extends JavaPlugin {
     numfails = getConfig().getInt("maxfails");
     String path = getConfig().getString("dbpath");
     term = getConfig().getString("term");
+    logger = getLogger();
 
     // Connect to database
     try {
       db = new DBConnect(path);
     } catch (IllegalArgumentException e) {
-      this.getLogger().severe("Failed to connect to database at " + path + "! System will be disabled.");
+      logger.severe("Failed to connect to database at " + path + "! System will be disabled.");
       this.numfails = 0;
     }
 
