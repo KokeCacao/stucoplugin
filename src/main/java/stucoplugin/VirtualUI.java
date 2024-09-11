@@ -92,7 +92,18 @@ public class VirtualUI {
   public ItemStack getItemStack(UUID playerUUID, String name, List<String> lore, Boolean glow) {
     ItemStack item = getItemStack(Material.PLAYER_HEAD, name, lore, glow);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
-    meta.setOwningPlayer(Bukkit.getOfflinePlayer(playerUUID));
+
+    try {
+      meta.setOwningPlayer(Bukkit.getOfflinePlayer(playerUUID));
+    } catch (Exception e) {
+      // when uuid is not found (not joined server before)
+      // [23:32:19 WARN]: java.lang.NullPointerException: Profile name must not be null
+      // [23:32:19 WARN]:        at java.base/java.util.Objects.requireNonNull(Objects.java:246)
+      // [23:32:19 WARN]:        at com.mojang.authlib.GameProfile.<init>(GameProfile.java:31)
+      // [23:32:19 WARN]:        at org.bukkit.craftbukkit.inventory.CraftMetaSkull.setOwningPlayer(CraftMetaSkull.java:212)
+      e.printStackTrace();
+    }
+
     item.setItemMeta(meta);
     return item;
   }
