@@ -110,8 +110,19 @@ public class EventListener implements Listener {
               // check for callback
               if (clickedItemIndex < ui.callbacks.size() &&
                   ui.callbacks.get(clickedItemIndex) != null) {
-                ui.callbacks.get(clickedItemIndex).call(ui, (Player) event.getWhoClicked(), event.getCurrentItem(),
-                    event.getSlot(), currentPage);
+                if (event.isLeftClick() && !event.isShiftClick()) {
+                  ui.callbacks.get(clickedItemIndex).call(ui, (Player) event.getWhoClicked(), event.getCurrentItem(),
+                      event.getSlot(), currentPage);
+                } else if (event.isRightClick() && !event.isShiftClick()) {
+                  ui.callbacksRight.get(clickedItemIndex).call(ui, (Player) event.getWhoClicked(), event.getCurrentItem(),
+                      event.getSlot(), currentPage);
+                } else if (event.isLeftClick() && event.isShiftClick()) {
+                  ui.callbacksLeftShift.get(clickedItemIndex).call(ui, (Player) event.getWhoClicked(), event.getCurrentItem(),
+                      event.getSlot(), currentPage);
+                } else if (event.isRightClick() && event.isShiftClick()) {
+                  ui.callbacksRightShift.get(clickedItemIndex).call(ui, (Player) event.getWhoClicked(), event.getCurrentItem(),
+                      event.getSlot(), currentPage);
+                }
                 return;
               }
 

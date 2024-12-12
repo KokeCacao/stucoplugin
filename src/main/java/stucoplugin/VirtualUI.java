@@ -31,16 +31,16 @@ interface VirtualUICallback {
         callback.call(_ui2, _player2, _item2, _slot2, _index2);
       };
       VirtualUI ui = new VirtualUI(name, 3 * 9);
-      ui.addItemStack(0, Material.RED_STAINED_GLASS_PANE, "Cancel", null, false, closeInv);
-      ui.addItemStack(1, Material.RED_STAINED_GLASS_PANE, "Cancel", null, false, closeInv);
-      ui.addItemStack(2, Material.RED_STAINED_GLASS_PANE, "Cancel", null, false, closeInv);
-      ui.addItemStack(3, Material.RED_STAINED_GLASS_PANE, "Cancel", null, false, closeInv);
+      ui.addItemStack(0, Material.RED_STAINED_GLASS_PANE, "Cancel", null, false, closeInv, closeInv, closeInv, closeInv);
+      ui.addItemStack(1, Material.RED_STAINED_GLASS_PANE, "Cancel", null, false, closeInv, closeInv, closeInv, closeInv);
+      ui.addItemStack(2, Material.RED_STAINED_GLASS_PANE, "Cancel", null, false, closeInv, closeInv, closeInv, closeInv);
+      ui.addItemStack(3, Material.RED_STAINED_GLASS_PANE, "Cancel", null, false, closeInv, closeInv, closeInv, closeInv);
       if (message != null)
-        ui.addItemStack(4, Material.PAPER, message, null, false, null);
-      ui.addItemStack(5, Material.GREEN_STAINED_GLASS_PANE, "Confirm", null, false, confirm);
-      ui.addItemStack(6, Material.GREEN_STAINED_GLASS_PANE, "Confirm", null, false, confirm);
-      ui.addItemStack(7, Material.GREEN_STAINED_GLASS_PANE, "Confirm", null, false, confirm);
-      ui.addItemStack(8, Material.GREEN_STAINED_GLASS_PANE, "Confirm", null, false, confirm);
+        ui.addItemStack(4, Material.PAPER, message, null, false, null, null, null, null);
+      ui.addItemStack(5, Material.GREEN_STAINED_GLASS_PANE, "Confirm", null, false, confirm, confirm, confirm, confirm);
+      ui.addItemStack(6, Material.GREEN_STAINED_GLASS_PANE, "Confirm", null, false, confirm, confirm, confirm, confirm);
+      ui.addItemStack(7, Material.GREEN_STAINED_GLASS_PANE, "Confirm", null, false, confirm, confirm, confirm, confirm);
+      ui.addItemStack(8, Material.GREEN_STAINED_GLASS_PANE, "Confirm", null, false, confirm, confirm, confirm, confirm);
       ui.showToPlayer(_player);
     };
     return callbackWrapper;
@@ -59,6 +59,9 @@ public class VirtualUI {
   public UUID uuid;
   public List<ItemStack> ui;
   public List<VirtualUICallback> callbacks;
+  public List<VirtualUICallback> callbacksRight;
+  public List<VirtualUICallback> callbacksLeftShift;
+  public List<VirtualUICallback> callbacksRightShift;
 
   public static HashMap<UUID, VirtualUI> uiMap = new HashMap<UUID, VirtualUI>();
 
@@ -78,6 +81,9 @@ public class VirtualUI {
 
     ui = new ArrayList<ItemStack>();
     callbacks = new ArrayList<VirtualUICallback>();
+    callbacksRight = new ArrayList<VirtualUICallback>();
+    callbacksLeftShift = new ArrayList<VirtualUICallback>();
+    callbacksRightShift = new ArrayList<VirtualUICallback>();
     uiMap.put(this.uuid, this);
   }
 
@@ -172,7 +178,8 @@ public class VirtualUI {
     return itemStack;
   }
 
-  public void addItemStack(int slot, ItemStack item, VirtualUICallback callback) {
+  public void addItemStack(int slot, ItemStack item, VirtualUICallback callback, VirtualUICallback callbacksRight,
+      VirtualUICallback callbackLeftShift, VirtualUICallback callbacksRightShift) {
     if (slot < 0) {
       // that means we assign slots automatically
       slot = ui.size();
@@ -180,39 +187,50 @@ public class VirtualUI {
 
     if (slot < ui.size()) {
       ui.set(slot, item);
-      callbacks.set(slot, callback);
+      this.callbacks.set(slot, callback);
+      this.callbacksRight.set(slot, callbacksRight);
+      this.callbacksLeftShift.set(slot, callbackLeftShift);
+      this.callbacksRightShift.set(slot, callbacksRightShift);
     } else {
       while (slot >= ui.size()) {
         ui.add(new ItemStack(Material.AIR));
-        callbacks.add(null);
+        this.callbacks.add(null);
+        this.callbacksRight.add(null);
+        this.callbacksLeftShift.add(null);
+        this.callbacksRightShift.add(null);
       }
       ui.set(slot, item);
-      callbacks.set(slot, callback);
+      this.callbacks.set(slot, callback);
+      this.callbacksRight.set(slot, callbacksRight);
+      this.callbacksLeftShift.set(slot, callbackLeftShift);
+      this.callbacksRightShift.set(slot, callbacksRightShift);
     }
   }
 
   public void addLineBreak(int howManyLineBreaks, Material mat) {
     ItemStack item = getItemStack(mat, "", null, false);
     while (ui.size() % 9 != 0) {
-      addItemStack(-1, item, null);
+      addItemStack(-1, item, null, null, null, null);
     }
     for (int i = 0; i < howManyLineBreaks; i++) {
       for (int j = 0; j < 9; j++) {
-        addItemStack(-1, item, null);
+        addItemStack(-1, item, null, null, null, null);
       }
     }
   }
 
   public void addItemStack(int slot, Material material, String name, List<String> lore, Boolean glow,
-      VirtualUICallback callback) {
+      VirtualUICallback callback, VirtualUICallback callbacksRight,
+      VirtualUICallback callbackLeftShift, VirtualUICallback callbacksRightShift) {
     ItemStack item = getItemStack(material, name, lore, glow);
-    addItemStack(slot, item, callback);
+    addItemStack(slot, item, callback, callbacksRight, callbackLeftShift, callbacksRightShift);
   }
 
   public void addItemStack(int slot, UUID playerUUID, String name, List<String> lore, Boolean glow,
-      VirtualUICallback callback) {
+      VirtualUICallback callback, VirtualUICallback callbacksRight,
+      VirtualUICallback callbackLeftShift, VirtualUICallback callbacksRightShift) {
     ItemStack item = getItemStack(playerUUID, name, lore, glow);
-    addItemStack(slot, item, callback);
+    addItemStack(slot, item, callback, callbacksRight, callbackLeftShift, callbacksRightShift);
   }
 
   // public void setPlayerHead(ItemStack item, String textureURL) {

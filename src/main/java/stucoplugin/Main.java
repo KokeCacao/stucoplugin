@@ -98,7 +98,7 @@ public class Main extends JavaPlugin {
       } else if (cmd.getName().equalsIgnoreCase("hwadmin")) {
         // base command usage hint
         if (args.length == 0) {
-          sender.sendMessage("Usage: /hwadmin [grade/show/tp/advancement/list]");
+          sender.sendMessage("Usage: /hwadmin [grade/tp/advancement/list]");
           return true;
         }
 
@@ -111,8 +111,10 @@ public class Main extends JavaPlugin {
           hwAdvancement((Player) sender, args);
         } else if (args[0].equalsIgnoreCase("list")) {
           hwadminList((Player) sender, args);
+        } else if (args[0].equalsIgnoreCase("grade-next")) {
+          StudentUI.gradeNext((Player) sender);
         } else {
-          sender.sendMessage("Usage: /hwadmin [grade/show/tp/advancement/list]");
+          sender.sendMessage("Usage: /hwadmin [grade/grade-next/tp/advancement/list]");
         }
       }
     } catch (Exception e) {
@@ -391,7 +393,7 @@ public class Main extends JavaPlugin {
             "(created_at, updated_at, assignment_id, student_id, details, grade) " +
             "VALUES (?, ?, ?, ?, ?, \"P\");",
             currentTime, currentTime, assignmentIndex, andrewID,
-            "automatically submitted by system)");
+            "(automatically submitted by system)");
         qq.close();
         totalRowsChanged += rowschanged;
       } else {
